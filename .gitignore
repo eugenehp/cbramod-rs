@@ -1,0 +1,7 @@
+/target
+/data/*.safetensors
+/data/*.bin
+*.swp
+*.swo
+*~
+.DS_Store

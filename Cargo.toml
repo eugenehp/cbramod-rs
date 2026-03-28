@@ -1,0 +1,53 @@
+[package]
+name = "cbramod-rs"
+version = "0.0.1"
+edition = "2021"
+description = "CBraMod EEG Foundation Model — inference in Rust with Burn ML"
+keywords      = ["eeg", "foundational", "BCI", "GPU", "CPU"]
+categories    = ["science", "mathematics"]
+authors       = ["Eugene Hauptmann"]
+license       = "Apache-2.0"
+homepage      = "https://github.com/eugenehp/cbramod-rs"
+repository    = "https://github.com/eugenehp/cbramod-rs"
+documentation = "https://docs.rs/cbramod-rs"
+readme        = "README.md"
+
+exclude = ["data/", "figures/", "tests/vectors/"]
+
+[lib]
+name = "cbramod_rs"
+path = "src/lib.rs"
+
+[[bin]]
+name = "infer"
+path = "src/bin/infer.rs"
+
+[[example]]
+name = "benchmark"
+path = "examples/benchmark.rs"
+
+[features]
+default = ["ndarray"]
+ndarray         = ["dep:burn-ndarray", "burn/ndarray"]
+blas-accelerate = ["burn-ndarray?/blas-accelerate"]
+openblas-system = ["burn-ndarray?/blas-openblas-system"]
+wgpu            = ["burn/wgpu"]
+metal           = ["wgpu", "burn-wgpu/metal"]
+vulkan          = ["wgpu", "burn-wgpu/vulkan"]
+
+[dependencies]
+burn = { version = "0.20.1", default-features = false, features = ["std", "simd"] }
+burn-ndarray = { version = "0.20.1", default-features = false, features = ["std", "simd", "multi-threads"], optional = true }
+burn-wgpu = { version = "0.20.1", default-features = true, optional = true }
+rustfft = "6"
+safetensors = "0.7"
+half = { version = "2", features = ["bytemuck"] }
+clap = { version = "4", features = ["derive", "env"] }
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+anyhow = "1.0.102"
+
+[profile.release]
+opt-level = 3
+lto = "thin"
+codegen-units = 1
